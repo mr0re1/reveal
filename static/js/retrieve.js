@@ -1,4 +1,5 @@
-import { do_decryption, base64ToUint8, uint8ToUtf8 } from "./main.js";
+import { base64ToUint8, uint8ToUtf8 } from "./utils.js";
+import { do_decryption } from "./crypto.js";
 
 function get_hash() {
     let hash = window.location.hash;

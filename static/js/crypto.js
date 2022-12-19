@@ -1,5 +1,3 @@
-
-
 const IV = new Uint8Array(16); // constant 0 IV
 
 export async function do_encryption(plaintext) {
@@ -55,44 +53,3 @@ export async function do_decryption(key, ciphertext) {
     );
     return plaintext;
 }
-
-export function uint8ToBase64(arr) {
-    return btoa(
-        Array(arr.length)
-            .fill('')
-            .map((_, i) => String.fromCharCode(arr[i]))
-            .join('')
-    );
-    }
-
-export function base64ToUint8(str) {
-    return new Uint8Array(
-        atob(str)
-            .split('')
-            .map(c => c.charCodeAt(0))
-    );
-}
-
-export function utf8ToUint8(str) {
-    return new TextEncoder().encode(str);
-}
-
-export function uint8ToUtf8(arr) {
-    return new TextDecoder().decode(arr);
-}
-
-export async function save(ciphertext) {
-    let ct = uint8ToBase64(new Uint8Array(ciphertext));
-    let response = await fetch('/save', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            ciphertext: ct
-        })
-    });
-    return response.json();
-}
-
-

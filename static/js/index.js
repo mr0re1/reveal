@@ -1,4 +1,6 @@
-import { do_encryption, uint8ToBase64, utf8ToUint8, save } from "./main.js";
+import { do_encryption } from "./crypto.js";
+import { uint8ToBase64, utf8ToUint8 } from "./utils.js";
+import { save } from "./api.js";
 
 function get_plaintext_input() {
     let plaintext = document.getElementById("plaintext_input").value;
