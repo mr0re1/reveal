@@ -27,14 +27,34 @@
         </header>
 
         <main>
-            <h2 id="plaintext_output"></h2>
-            <div id="ciphertext_vault" hidden data-ciphertext="{{ .ciphertext }}"></div>
+            {{ if .exists }}
+            <div id="data_vault" hidden data-id="{{ .id }}"></div>
+            <div id="inputs">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">🔑</span>
+                    </div>
+                    <input type="text" id="key_input" placeholder="Enter your key" class="form-control">
+                </div>
+
+                <button class="btn btn-primary" id="reveal_button">reveal</button>
+            </div>
+
+            <div id="outputs" hidden>
+                <h2 id="plaintext_output"></h2>
+                <a href="/" class="btn btn-primary">go back and make another one</a>
+            </div>
+            <script type="module" src="/static/js/view.js"></script>
+
+            {{ else }}
+            <h1>Not found</h1>
+            {{ end }}
         </main>
         <footer class="pt-5 my-5 text-muted border-top">
             Created by the <a href="http://orlov.love">mr0re1</a> · © 2022
         </footer>
     </div>
-    <script type="module" src="/static/js/retrieve.js"></script>
+
 </body>
 
 </html>

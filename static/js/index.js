@@ -7,6 +7,13 @@ function get_plaintext_input() {
     return utf8ToUint8(plaintext);
 }
 
+function compose_url(id, key) {
+    let protocol = window.location.protocol;
+    let host = window.location.host;
+    let key_b64 = uint8ToBase64(new Uint8Array(key));
+    return `${protocol}//${host}/${id}#${key_b64}`;
+}
+
 function on_make_button_click() {
     hide_alert()
     let plaintext = get_plaintext_input();
@@ -19,13 +26,8 @@ function on_make_button_click() {
         let ct = result.ciphertext;
 
         save(ct).then(function (response) {
-            let protocol = window.location.protocol;
-            let host = window.location.host;
-            let id = response.id;
-            let key_b64 = uint8ToBase64(new Uint8Array(key));
-            let url = `${protocol}//${host}/retrieve/${id}#${key_b64}`;
             document.getElementById("page_author").hidden = true;
-            show_link_page(url)
+            show_link_page(compose_url(response.id, key))
 
         });
 

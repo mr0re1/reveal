@@ -51,7 +51,6 @@ func save_ciphertext(c *gin.Context) {
 }
 
 func retrieve_ciphertext(c *gin.Context) {
-
 	ciphertext, ok := DB[c.Param("id")]
 	if !ok {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -59,16 +58,27 @@ func retrieve_ciphertext(c *gin.Context) {
 		})
 		return
 	}
-	c.HTML(http.StatusOK, "retrieve.html", gin.H{"ciphertext": ciphertext})
+	c.JSON(http.StatusOK, gin.H{"ciphertext": ciphertext})
+}
+
+func view_page(c *gin.Context) {
+	_, ok := DB[c.Param("id")]
+	c.HTML(http.StatusOK, "view.html", gin.H{
+		"id":     c.Param("id"),
+		"exists": ok,
+	})
 }
 
 func main() {
 	router := gin.Default()
 	router.StaticFile("/", "static/index.html")
 	router.Static("/static", "static")
+
 	router.LoadHTMLGlob("templates/*")
+	router.GET("/:id", view_page)
 
 	router.POST("/save", save_ciphertext)
 	router.GET("/retrieve/:id", retrieve_ciphertext)
+
 	router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
