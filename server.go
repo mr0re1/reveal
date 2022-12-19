@@ -28,10 +28,6 @@ func find_id() string {
 	}
 }
 
-func make_retrieve_url(id string) string {
-	return "http://localhost:8080/retrieve/" + id
-}
-
 type SaveRequest struct {
 	Ciphertext string `json:"ciphertext"`
 }
@@ -50,7 +46,7 @@ func save_ciphertext(c *gin.Context) {
 	id := find_id()
 	DB[id] = ct
 	c.JSON(http.StatusOK, gin.H{
-		"url": make_retrieve_url(id),
+		"id": id,
 	})
 }
 
@@ -63,12 +59,7 @@ func retrieve_ciphertext(c *gin.Context) {
 		})
 		return
 	}
-	//c.JSON(http.StatusOK, gin.H{
-	//	"ciphertext": ciphertext,
-	//})
 	c.HTML(http.StatusOK, "retrieve.html", gin.H{"ciphertext": ciphertext})
-
-	//c.HTML(http.StatusOK, "retrieve.html", gin.H{"ciphertext": ciphertext})
 }
 
 func main() {

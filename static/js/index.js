@@ -19,10 +19,14 @@ function on_make_button_click() {
         let ct = result.ciphertext;
 
         save(ct).then(function (response) {
-            let url = response.url + "#" + uint8ToBase64(new Uint8Array(key));
+            let protocol = window.location.protocol;
+            let host = window.location.host;
+            let id = response.id;
+            let key_b64 = uint8ToBase64(new Uint8Array(key));
+            let url = `${protocol}//${host}/retrieve/${id}#${key_b64}`;
             document.getElementById("page_author").hidden = true;
             show_link_page(url)
-            
+
         });
 
     });
@@ -35,7 +39,7 @@ function show_alert(txt) {
     bar.hidden = false
 }
 
-function hide_alert(){
+function hide_alert() {
     document.getElementById("author_alert").hidden = true;
 }
 
