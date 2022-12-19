@@ -15,10 +15,6 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-
-    
-    <script src='/static/main.js'></script>
-
 </head>
 
 <body data-new-gr-c-s-check-loaded="14.1089.0" data-gr-ext-installed="">
@@ -31,15 +27,20 @@
         </header>
 
         <main>
-            
-            <div class="form-group">
-                <textarea class="form-control form-control-lg" type="text" id="plaintext_input"></textarea>
+            <div id="page_author">
+                <div class="form-group">
+                    <div class="alert alert-warning" role="alert" id="author_alert" hidden></div>
+                    <textarea class="form-control form-control-lg" type="text" id="plaintext_input"
+                        placeholder="Describe yourself here...">
 
-                <button class="btn btn-primary" onclick="on_make_button_click()">make</button>
+                    </textarea>
+                    <button id="make_button" class="btn btn-primary">make</button>
+                </div>
             </div>
+            <div id="page_link" hidden>
+                <a id="link"></a>
             </div>
 
-            <a id="link"></a>
             <!--
             <h1>Get started with Bootstrap</h1>
             <p class="fs-5 col-md-8">Quickly and easily get started with Bootstrap's compiled, production-ready files
@@ -53,45 +54,15 @@
             <hr class="col-3 col-md-2 mb-5">
             -->
 
-
-            <footer class="pt-5 my-5 text-muted border-top">
-                Created by the <a href="http://orlov.love">mr0re1</a> · © 2022
-            </footer>
+        </main>
+        <footer class="pt-5 my-5 text-muted border-top">
+            Created by the <a href="http://orlov.love">mr0re1</a> · © 2022
+        </footer>
     </div>
 
-    
 
 
+    <script type="module" src="/static/index.js"></script>
 </body>
-
-<script>
-    function get_plaintext_input() {
-        let plaintext = document.getElementById("plaintext_input").value;
-        return utf8ToUint8(plaintext);
-    }
-
-    function on_make_button_click() {
-        let plaintext = get_plaintext_input();
-        if (plaintext.length == 0) {
-            alert("Please enter some text to encrypt");
-            return;
-        }
-
-        do_encryption(plaintext).then(function (result) {
-            let key = result.key;
-            let ct = result.ciphertext;
-
-            save(ct).then(function (response) {
-                url = response.url + "#" + uint8ToBase64(new Uint8Array(key));
-                link = document.getElementById("link");
-                link.href = url;
-                link.innerHTML = url;
-            });
-
-        });
-
-    }
-
-</script>
 
 </html>
