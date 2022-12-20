@@ -1,36 +1,16 @@
 package main
 
 import (
-	"encoding/base64"
-	"math/rand"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-var DB = make(map[string]string)
-
-func generate_id() string {
-	b := make([]byte, 16)
-	rand.Seed(time.Now().UnixNano())
-	rand.Read(b)
-	encoding := base64.URLEncoding.WithPadding(base64.NoPadding)
-	return encoding.EncodeToString(b)
-}
-
-func find_id() string {
-	for {
-		id := generate_id()
-		if _, ok := DB[id]; !ok {
-			return id
-		}
-	}
-}
-
 type SaveRequest struct {
 	Ciphertext string `json:"ciphertext"`
 }
+
+var storage Storage = NewInMemoryStorage()
 
 func save_ciphertext(c *gin.Context) {
 	var req SaveRequest
@@ -43,29 +23,31 @@ func save_ciphertext(c *gin.Context) {
 		})
 		return
 	}
-	id := find_id()
-	DB[id] = ct
-	c.JSON(http.StatusOK, gin.H{
-		"id": id,
-	})
+	id, err := storage.Save(ct)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"id": id})
+
 }
 
 func retrieve_ciphertext(c *gin.Context) {
-	ciphertext, ok := DB[c.Param("id")]
-	if !ok {
-		c.JSON(http.StatusNotFound, gin.H{
-			"err": "not found",
-		})
+	ciphertext, err := storage.Retrieve(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"err": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"ciphertext": ciphertext})
 }
 
 func view_page(c *gin.Context) {
-	_, ok := DB[c.Param("id")]
+	id := c.Param("id")
+	_, err := storage.Retrieve(id)
 	c.HTML(http.StatusOK, "view.html", gin.H{
-		"id":     c.Param("id"),
-		"exists": ok,
+		"id":     id,
+		"exists": err == nil,
 	})
 }
 
