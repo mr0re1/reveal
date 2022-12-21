@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +12,7 @@ type SaveRequest struct {
 	Ciphertext string `json:"ciphertext"`
 }
 
-var storage Storage = NewInMemoryStorage()
+var storage Storage
 
 func save_ciphertext(c *gin.Context) {
 	var req SaveRequest
@@ -51,7 +53,21 @@ func view_page(c *gin.Context) {
 	})
 }
 
+func setStorage(memdb *bool) {
+	if *memdb {
+		log.Println("Using in-memory database")
+		storage = NewInMemoryStorage()
+	} else {
+		log.Println("Using Firestore database")
+		storage = NewFireStoreStorage()
+	}
+}
+
 func main() {
+	memdb := flag.Bool("memdb", false, "use in-memory database")
+	flag.Parse()
+	setStorage(memdb)
+
 	router := gin.Default()
 	router.StaticFile("/", "static/index.html")
 	router.Static("/static", "static")
